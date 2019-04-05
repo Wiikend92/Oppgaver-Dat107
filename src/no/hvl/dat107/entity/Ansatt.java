@@ -1,4 +1,4 @@
-package no.hvl.dat107;
+package no.hvl.dat107.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -13,9 +13,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import no.hvl.dat107.Avdeling;
-
-
 @Entity
 @Table(schema = "oblig3_jpa")
 public class Ansatt {
@@ -29,8 +26,8 @@ public class Ansatt {
 	private LocalDate ansettelsesdato;
 	private String stilling;
 	private BigDecimal maanedslonn;
-	private Avdeling avdeling;
-	
+	private int sted;
+
 //	@OneToMany(mappedBy = "ansatt", fetch = FetchType.EAGER)
 //	private List<Prosjekter> prosjekter;
 
@@ -38,14 +35,14 @@ public class Ansatt {
 	}
 
 	public Ansatt(String brukernavn, String fornavn, String etternavn, LocalDate ansettelsesdato, String stilling,
-			BigDecimal maanedslonn, Avdeling avdeling) {
+			BigDecimal maanedslonn, int sted) {
 		this.brukernavn = brukernavn;
 		this.fornavn = fornavn;
 		this.etternavn = etternavn;
 		this.ansettelsesdato = ansettelsesdato;
 		this.stilling = stilling;
 		this.maanedslonn = maanedslonn;
-		this.avdeling = avdeling;
+		this.sted = sted;
 	}
 
 	public int getAnsNr() {
@@ -100,19 +97,22 @@ public class Ansatt {
 		this.maanedslonn = maanedslonn;
 	}
 
+	public int getAvdeling() {
+		return sted;
+	}
+
+	public void setAvdeling(int sted) {
+		this.sted = sted;
+	}
+
+	
 	@Override
 	public String toString() {
 		return "Ansatt [ansNr=" + ansNr + ", brukernavn=" + brukernavn + ", fornavn=" + fornavn + ", etternavn="
 				+ etternavn + ", ansettelsesdato=" + ansettelsesdato + ", stilling=" + stilling + ", maanedslonn="
-				+ maanedslonn + "]";
-	}
-
-	public Avdeling getAvdeling() {
-		return avdeling;
-	}
-
-	public void setAvdeling(Avdeling avdeling) {
-		this.avdeling = avdeling;
+				+ maanedslonn + ", sted=" + sted + "]";
 	}
 	
+	
+
 }

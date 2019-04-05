@@ -5,14 +5,29 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
+import no.hvl.dat107.eao.AnsattEAO;
+import no.hvl.dat107.eao.AvdelingEAO;
+import no.hvl.dat107.entity.Ansatt;
+import no.hvl.dat107.entity.Avdeling;
+
 public class Main {
 
 	public static void main(String[] args) {
-		AnsattEAO aeao = new AnsattEAO();
-		AvdelingEAO avdeao = new AvdelingEAO();
+		AnsattEAO ansattEAO = new AnsattEAO();
+		AvdelingEAO avdelingEAO = new AvdelingEAO();
 		Scanner tastatur = new Scanner(System.in);
 		int input;
 		String strenginn;
+		
+		System.out.println(ansattEAO.finnAnsattID(ansattEAO, 1).toString());
+		
+		System.out.println("Test av full liste");
+		System.out.println(ansattEAO.getAnsatt(ansattEAO));
+//		List<Ansatt> a = aeao.getAnsatt();
+//		for(int i = 0; i < a.size(); i++) {
+//			System.out.println(a.get(i).toString());
+//		}
+		/*
 		meny();
 		input = tastatur.nextInt();
 		tastatur.nextLine();
@@ -57,6 +72,7 @@ public class Main {
 			}
 			break;
 		}
+		*/
 
 	}
 
@@ -136,7 +152,7 @@ public class Main {
 			Avdeling avdeling = avdeao.finnAvdelingID(avdeao, avdNr);
 			
 
-			ny = new Ansatt(brukernavn, fornavn, etternavn, date, stilling, maanedslonn, avdeling);
+			ny = new Ansatt(brukernavn, fornavn, etternavn, date, stilling, maanedslonn, avdNr);
 			System.out.println("Ny bruker har brukernavn: " + eao.lagreIDatabasen(ny));
 			tastatur.nextLine();
 			System.out.println("Legge til flere? (y/n)");

@@ -1,4 +1,4 @@
-package no.hvl.dat107;
+package no.hvl.dat107.eao;
 
 import java.util.List;
 
@@ -6,6 +6,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
+
+import no.hvl.dat107.entity.Ansatt;
 
 public class AnsattEAO {
 
@@ -76,12 +79,12 @@ public class AnsattEAO {
 		}
 	}
 	
-	public List<Ansatt> getAnsatt(){
+	public int getAnsatt(AnsattEAO eao){
 		EntityManager em = emf.createEntityManager();
-		List<Ansatt> ansatte = null;
-		
+		int ansatte = 0;
+		//Query query = em.createQuery("SELECT um FROM UMUserType um");
 		try {
-			ansatte = em.createQuery("Select f from ansatt f").getResultList();
+			ansatte = em.createQuery("Select f FROM ansatt f").getFirstResult();
 		}catch(IllegalArgumentException iae){
 			iae.printStackTrace(System.err);
 		}finally {
