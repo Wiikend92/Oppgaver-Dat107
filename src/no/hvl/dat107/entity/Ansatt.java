@@ -9,7 +9,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -28,8 +27,8 @@ public class Ansatt {
 	private BigDecimal maanedslonn;
 	private int sted;
 
-//	@OneToMany(mappedBy = "ansatt", fetch = FetchType.EAGER)
-//	private List<Prosjekter> prosjekter;
+	@OneToMany(mappedBy = "ansatt")
+	private List<Prosjektdeltagelse> deltagelser;
 
 	public Ansatt() {
 	}
@@ -112,7 +111,26 @@ public class Ansatt {
 				+ etternavn + ", ansettelsesdato=" + ansettelsesdato + ", stilling=" + stilling + ", maanedslonn="
 				+ maanedslonn + ", sted=" + sted + "]";
 	}
-	
-	
 
+	public void leggTilProsjektdeltagelse(Prosjektdeltagelse prosjektdeltagelse) {
+        deltagelser.add(prosjektdeltagelse);
+    }
+
+    public void fjernProsjektdeltagelse(Prosjektdeltagelse prosjektdeltagelse) {
+        deltagelser.remove(prosjektdeltagelse);
+    }
+	
+    
+    public void skrivUt(String innrykk) {
+        System.out.printf("%sAnsatt nr %d: %s %s", innrykk, ansNr, fornavn, etternavn);
+    }
+    
+    public void skrivUtMedProsjekter() {
+        System.out.println();
+        skrivUt("");
+        deltagelser.forEach(p -> p.skrivUt("\n   "));
+    }
+    public List<Prosjektdeltagelse> getDeltagelser() {
+    	return deltagelser;
+    }
 }

@@ -51,7 +51,7 @@ public class AvdelingEAO {
 		EntityManager em = emf.createEntityManager();
 		List<Avdeling> avdeling;
 		try {
-			avdeling = em.createNamedQuery("Avdeling.finnAlle").getResultList();
+			avdeling = em.createQuery("Select f FROM Avdeling f", Avdeling.class).getResultList();
 		}finally {
 			em.close();
 		}
