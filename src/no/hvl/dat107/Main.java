@@ -295,8 +295,7 @@ public class Main {
 
 			// Ansettelsesdato
 			String userInput = "";
-			while (!userInput.matches("^\\d{2}/\\d{2}/\\d{4}$")) { // Sjekker om userInput nøyaktig matcher formen
-																	// "hh/hh/hhhh", der h er et heltall
+			while (!userInput.matches("^\\d{2}/\\d{2}/\\d{4}$")) { // Sjekker om userInput nøyaktig matcher formen "hh/hh/hhhh", der h er et heltall
 				System.out.println("Skriv inn annsettelses dato på form dd/mm/yyyy: ");
 				userInput = tastatur.nextLine();
 				if (!userInput.matches("^\\d{2}/\\d{2}/\\d{4}$")) {
