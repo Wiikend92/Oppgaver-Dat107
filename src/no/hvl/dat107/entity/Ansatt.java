@@ -133,4 +133,8 @@ public class Ansatt {
     public List<Prosjektdeltagelse> getDeltagelser() {
     	return deltagelser;
     }
+
+	
+		
+	
 }

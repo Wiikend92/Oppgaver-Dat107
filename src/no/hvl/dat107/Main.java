@@ -157,15 +157,13 @@ public class Main {
 				int pid13 = tastatur.nextInt();
 				tastatur.nextLine();
 				System.out.println("Skriv inn timer du vil logføre");
-				int nytimer = tastatur.nextInt();
+				int timer13 = tastatur.nextInt();
 				tastatur.nextLine();
 				Ansatt ansatt13 = ansattEAO.finnAnsattID(ansattEAO, id13);
 				Prosjekt prosjekt13 = prosjektEAO.finnProsjektMedId(pid13);
-				
 				Prosjektdeltagelse deltagelse13 = ansattEAO.finnProsjektdeltagelse(ansatt13, prosjekt13);
-				int timer = deltagelse13.getTimer();
-				//deltagelse13.setTimer(timer + nytimer);
-					System.out.println("Timer registret = " + timer);			
+				deltagelse13.leggtilTimer(timer13);		
+				ansattEAO.oppdaterTimer(deltagelse13);
 				break;
 			}
 			System.out.println("\n");

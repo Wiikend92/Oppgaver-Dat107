@@ -163,5 +163,19 @@ public class AnsattEAO {
 		}
 		return pd;
 	}
+	
+	public void oppdaterTimer(Prosjektdeltagelse deltagelse) {
+		EntityManager em = emf.createEntityManager();
+		
+		try {
+			deltagelse = em.merge(deltagelse);
+			em.getTransaction().begin();
+			em.getTransaction().commit();
+		} catch(Throwable e) {
+			System.out.println("Error: " + e.getMessage());
+		} finally {
+			em.close();
+		}
+	}
 
 }
