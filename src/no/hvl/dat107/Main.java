@@ -2,8 +2,11 @@ package no.hvl.dat107;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+
+import org.eclipse.persistence.exceptions.DatabaseException;
 
 import no.hvl.dat107.eao.AnsattEAO;
 import no.hvl.dat107.eao.AvdelingEAO;
@@ -184,7 +187,6 @@ public class Main {
 
 		Prosjekt ny = new Prosjekt(navn, beskrivelse);
 		prosjektEAO.lagreIDatabasen(ny);
-
 	}
 
 	private static void opprettAvdeling(AvdelingEAO avdelingEAO, AnsattEAO ansattEAO) {
@@ -203,7 +205,6 @@ public class Main {
 		System.out.println("Ny avdeling har navn: " + avdelingEAO.lagreIDatabasen(ny));
 		sjef.setAvdeling(ny.getAvdelingId());
 		ansattEAO.updateAnsatt(sjef);
-
 	}
 
 	private static void oppdaterAvdeling(Ansatt ans8) {
@@ -246,60 +247,125 @@ public class Main {
 	}
 
 	public static LocalDate dateInput(String userInput) {
-		int arg0, arg1, arg2;
-		arg0 = Integer.parseInt(userInput.substring(0, 2));
-		arg1 = Integer.parseInt(userInput.substring(3, 5));
-		arg2 = Integer.parseInt(userInput.substring(6, 10));
-
-		System.out.println(arg0 + " " + arg1 + " " + arg2);
-		LocalDate date = LocalDate.of(arg2, arg1, arg0);
-
-		return date;
+		String[] dateParts = userInput.split("/");
+		return LocalDate.of(
+					Integer.parseInt(dateParts[2]),
+					Integer.parseInt(dateParts[1]),
+					Integer.parseInt(dateParts[0])
+				);
 	}
 
 	public static void nyAnsatt(AnsattEAO eao, AvdelingEAO avdeao) {
 		Ansatt ny;
 		Scanner tastatur = new Scanner(System.in);
 		String input = "";
-		int count = 1;
-		while (count != 0) {
+		boolean add = true;
+		while (add) {
 			System.out.println("Legger til ny ansatt.");
-			System.out.println("Skriv inn brukernavn (maks 5 tegn): ");
-			String brukernavn = tastatur.next();
 
-			System.out.println("Skriv inn fornavn: ");
-			String fornavn = tastatur.next();
+			// Brukernavn
+			String brukernavn = "";
+			while (!brukernavn.matches("^\\w{1,5}$")) { // Sjekker om brukernavn inneholder mellom 1 og 5 bokstaver
+				System.out.println("Skriv inn brukernavn (maks 5 tegn): ");
+				brukernavn = tastatur.nextLine();
+				if (!brukernavn.matches("^\\w{1,5}$")) {
+					System.out.println("Ugyldig brukernavn, prøv igjen.");
+				}
+			}
 
-			System.out.println("Skriv inn etternavn: ");
-			String etternavn = tastatur.next();
+			// Fornavn
+			String fornavn = "";
+			while (fornavn.length() == 0) {
+				System.out.println("Skriv inn fornavn: ");
+				fornavn = tastatur.nextLine();
+				if (fornavn.length() == 0) {
+					System.out.println("Ugyldig navn, prøv igjen.");
+				}
+			}
 
-			System.out.println("Skriv inn annsettelses dato på form dd/mm/yyyy: ");
-			String userInput = tastatur.next();
+			// Etternavn
+			String etternavn = "";
+			while (etternavn.length() == 0) {
+				System.out.println("Skriv inn etternavn: ");
+				etternavn = tastatur.nextLine();
+				if (etternavn.length() == 0) {
+					System.out.println("Ugyldig navn, prøv igjen.");
+				}
+			}
+
+			// Ansettelsesdato
+			String userInput = "";
+			while (!userInput.matches("^\\d{2}/\\d{2}/\\d{4}$")) { // Sjekker om userInput nøyaktig matcher formen
+																	// "hh/hh/hhhh", der h er et heltall
+				System.out.println("Skriv inn annsettelses dato på form dd/mm/yyyy: ");
+				userInput = tastatur.nextLine();
+				if (!userInput.matches("^\\d{2}/\\d{2}/\\d{4}$")) {
+					System.out.println("Ugyldig datoformat, prøv igjen.");
+				}
+			}
 			LocalDate date = dateInput(userInput);
 
-			System.out.println("Skriv inn stillingstittel: ");
-			String stilling = tastatur.next();
-
-			System.out.println("Skriv inn maanedslønn: ");
-			BigDecimal maanedslonn = tastatur.nextBigDecimal();
-			tastatur.nextLine();
-
-			System.out.println("Skriv inn avdelings nummer: ");
-			int avdNr = tastatur.nextInt();
-			tastatur.nextLine();
-
-			ny = new Ansatt(brukernavn, fornavn, etternavn, date, stilling, maanedslonn, avdNr);
-			System.out.println("Ny bruker har brukernavn: " + eao.lagreIDatabasen(ny));
-			tastatur.nextLine();
-			System.out.println("Legge til flere? (y/n)");
-			input = tastatur.next();
-
-			if (input == "n") {
-				count++;
+			// Stillingstittel
+			String stilling = "";
+			while (stilling.length() == 0) {
+				System.out.println("Skriv inn stillingstittel: ");
+				stilling = tastatur.nextLine();
+				if (stilling.length() == 0) {
+					System.out.println("Ugyldig stillingstittel, prøv igjen.");
+				}
 			}
-			count--;
 
+			// Månedslønn
+			boolean isValidSalary = false;
+			BigDecimal maanedslonn = null;
+			while (!isValidSalary) {
+				System.out.println("Skriv inn månedslønn: ");
+				try {
+					maanedslonn = tastatur.nextBigDecimal();
+				} catch (InputMismatchException e) {
+					maanedslonn = BigDecimal.ZERO;
+				}
+				tastatur.nextLine();
+				if (!(maanedslonn.intValue() > 0)) {
+					System.out.println("Ugyldig månedslønn, prøv igjen.");
+				} else {
+					isValidSalary = true;
+				}
+			}
+
+			// Avdelingsnummer
+			int avdNr = 0;
+			while (!(avdNr > 0)) {
+				System.out.println("Skriv inn avdelingsnummer: ");
+				try {
+					avdNr = tastatur.nextInt();
+				} catch (InputMismatchException e) {
+					avdNr = 0;
+				}
+				tastatur.nextLine();
+				if (!(avdNr > 0)) {
+					System.out.println("Ugyldig avdelingsnummer, prøv igjen.");
+				}
+			}
+
+			// Lag ny ansatt
+			ny = new Ansatt(brukernavn, fornavn, etternavn, date, stilling, maanedslonn, avdNr);
+			try {
+				System.out.println("Ny bruker har brukernavn: " + eao.lagreIDatabasen(ny));
+			} catch (DatabaseException e) {
+				System.out.println("Kunne ikke opprette ny ansatt på grunn av en feil.");
+			}
+			// tastatur.nextLine();
+			while (!(input.equalsIgnoreCase("n") || input.equalsIgnoreCase("y"))) {
+				System.out.println("Legge til flere? (y/n)");
+				input = tastatur.nextLine();
+				if (input.equalsIgnoreCase("n")) {
+					add = false;
+				}
+			}
+			input = "";
 		}
+		tastatur.close();
 	}
 
 	public static void meny() {
